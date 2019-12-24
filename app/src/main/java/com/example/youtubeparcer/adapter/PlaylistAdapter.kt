@@ -60,7 +60,7 @@ class YouTubeViewHolder(itemView: View, val function: (ItemsItem) -> Any) : Recy
             .centerCrop()
             .fit()
             .into(image)
-        title?.text = item.snippet.channelId
+        title?.text = item.snippet.title
         description?.text = item.contentDetails.itemCount
         itemView.setOnClickListener{
             function(item)

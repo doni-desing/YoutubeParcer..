@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.youtubeparcer.model.DetailModelClass
+import com.example.youtubeparcer.model.DetailVideoModel
 import com.example.youtubeparcer.model.ItemsItem
 import com.example.youtubeparcer.repository.MainRepository
 

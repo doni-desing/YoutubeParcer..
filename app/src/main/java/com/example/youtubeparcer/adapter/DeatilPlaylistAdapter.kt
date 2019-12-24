@@ -48,13 +48,13 @@ class DetailYouTubeViewHolder(itemView: View, val function: (ItemsItem) -> Any) 
     private var image: ImageView? = null
     private var title: TextView? = null
     private var description: TextView? = null
-    private var data: TextView? = null
+    private var video: TextView? = null
 
     init {
         image = itemView.findViewById(R.id.image)
         title = itemView.findViewById(R.id.title)
         description = itemView.findViewById(R.id.description)
-        data = itemView.findViewById(R.id.tv_data)
+        video = itemView.findViewById(R.id.tv_video)
 
     }
 
@@ -65,9 +65,9 @@ class DetailYouTubeViewHolder(itemView: View, val function: (ItemsItem) -> Any) 
             .centerCrop()
             .fit()
             .into(image)
-        title?.text = item.snippet.channelId
+        title?.text = item.snippet.title
+        video!!.visibility = View.INVISIBLE
         description?.text = item.contentDetails.itemCount
-        data?.text =
             itemView.setOnClickListener{
                 function(item)
             }.toString()
