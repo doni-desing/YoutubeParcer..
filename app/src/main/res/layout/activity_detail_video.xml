@@ -63,7 +63,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/nested_container"
                 app:layout_constraintStart_toStartOf="@+id/nested_container"
-                app:layout_constraintTop_toBottomOf="@+id/btn_download" />
+                app:layout_constraintTop_toBottomOf="@+id/clickDownload" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

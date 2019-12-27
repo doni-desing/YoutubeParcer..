@@ -1,16 +1,20 @@
 package com.example.youtubeparcer.detail_video
 
 import android.annotation.SuppressLint
+import android.app.DownloadManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +33,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.offline.DownloadAction
 import com.google.android.exoplayer2.offline.Downloader
 import com.google.android.exoplayer2.offline.DownloaderConstructorHelper
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.util.NotificationUtil.createNotificationChannel
 import kotlinx.android.synthetic.main.activity_detail_video.*
 import kotlinx.android.synthetic.main.alert_dialog.view.*
@@ -44,9 +49,11 @@ class VideoActivity : AppCompatActivity(), CallBacks.playerCallBack {
     private var content: String? = null
     private var notificationManager: NotificationManager? = null
 
+    private lateinit var playerView: PlayerView
+
     private val ITAG_FOR_AUDIO = 140
 
-    private lateinit var player: Player
+    private var player: Player? = null
     private lateinit var playerManager: PlayerManager
 
     private var formatsToShowList: MutableList<YtVideo>? = null
@@ -55,7 +62,7 @@ class VideoActivity : AppCompatActivity(), CallBacks.playerCallBack {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_video)
-
+        initViews()
         notificationManager =
             getSystemService(
                 Context.NOTIFICATION_SERVICE
@@ -74,6 +81,10 @@ class VideoActivity : AppCompatActivity(), CallBacks.playerCallBack {
 
         viewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
         fetchDetailVideo()
+    }
+
+    private fun initViews() {
+        playerView = findViewById(R.id.player_view)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -120,54 +131,37 @@ class VideoActivity : AppCompatActivity(), CallBacks.playerCallBack {
     }
 
 
-    private fun downloadVideo(){
-        object : DownloadAction("", 1, null, false, ByteArray(1)){
-            override fun createDownloader(downloaderConstructorHelper: DownloaderConstructorHelper?): Downloader {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+@SuppressLint("StaticFieldLeak")
+private fun actualLink(link : String) {
+    object : YouTubeExtractor(this) {
+        public override fun onExtractionComplete(ytFiles: SparseArray<YtFile>?, vMeta: VideoMeta) {
 
-            override fun writeToStream(output: DataOutputStream?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+            formatsToShowList = java.util.ArrayList<YtVideo>()
+            var i = 0
+            var itag: Int
+            if (ytFiles != null) {
+                while (i < ytFiles.size()) {
+                    itag = ytFiles.keyAt(i)
+                    val ytFile = ytFiles.get(itag)
 
-        }
-    }
-    @SuppressLint("StaticFieldLeak")
-    private fun actualLink(link: String) {
-        object : YouTubeExtractor(this) {
-            public override fun onExtractionComplete(
-                ytFiles: SparseArray<YtFile>?,
-                vMeta: VideoMeta
-            ) {
-
-                formatsToShowList = java.util.ArrayList<YtVideo>()
-                var i = 0
-                var itag: Int
-                if (ytFiles != null) {
-                    while (i < ytFiles.size()) {
-                        itag = ytFiles.keyAt(i)
-                        val ytFile = ytFiles.get(itag)
-
-                        if (ytFile.format.height == -1 || ytFile.format.height >= 360) {
-                            addFormatToList(ytFile)
-                        }
-                        i++
+                    if (ytFile.format.height == -1 || ytFile.format.height >= 360) {
+                        addFormatToList(ytFile, ytFiles)
                     }
+                    i++
                 }
-
-                (formatsToShowList as java.util.ArrayList<YtVideo>).sortWith(Comparator { lhs, rhs ->
-                    lhs.height - rhs.height
-                })
-
-                val yotutubeUrl =
-                    (formatsToShowList as java.util.ArrayList<YtVideo>)[(formatsToShowList as ArrayList<YtVideo>).lastIndex]
-                playVideo(yotutubeUrl.videoFile!!.url)
             }
-        }.extract(link, true, true)
-    }
+            (formatsToShowList as java.util.ArrayList<YtVideo>).sortWith(Comparator {
+                    lhs, rhs -> lhs.height - rhs.height
+            })
+
+            val yotutubeUrl = (formatsToShowList as java.util.ArrayList<YtVideo>) [(formatsToShowList as ArrayList<YtVideo>).lastIndex]
+            playVideo(yotutubeUrl.videoFile!!.url)
+        }
+    }.extract(link, true, true)
+}
 
 
-    private fun addFormatToList(ytFile: YtFile) {
+    private fun addFormatToList(ytFile: YtFile, ytFiles: SparseArray<YtFile>) {
         val height = ytFile.format.height
         if (height != -1) {
             for (frVideo in this.formatsToShowList!!) {
@@ -175,16 +169,13 @@ class VideoActivity : AppCompatActivity(), CallBacks.playerCallBack {
                     return
                 }
             }
-            if (ytFile.format.height == Configuration.ORIENTATION_UNDEFINED){
-                player_view
-            }
         }
         val frVideo = YtVideo()
         frVideo.height = height
         if (ytFile.format.isDashContainer) {
             if (height > 0) {
                 frVideo.videoFile = ytFile
-                frVideo.audioFile = ytFile
+                frVideo.audioFile = ytFiles.get(ITAG_FOR_AUDIO)
             } else {
                 frVideo.audioFile = ytFile
             }
@@ -194,8 +185,9 @@ class VideoActivity : AppCompatActivity(), CallBacks.playerCallBack {
         formatsToShowList!!.add(frVideo)
     }
 
-    private fun playVideo(url: String) {
+    private fun playVideo(url: String ) {
         player_view?.player = player
+        DownloadManager.Request(Uri.parse(url))
         PlayerManager.getSharedInstance(this).playStream(url)
         PlayerManager.getSharedInstance(this).setPlayerListener(this)
     }
@@ -208,13 +200,16 @@ class VideoActivity : AppCompatActivity(), CallBacks.playerCallBack {
     }
 
 
+private fun checkPermission(){
 
+}
     @RequiresApi(Build.VERSION_CODES.O)
     fun clicelable(view: View) { val mDialogView = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null)
         val mBuilder = AlertDialog.Builder(this)
 
         mBuilder.setTitle("Select video quality")
         mBuilder.setView(mDialogView)
+        checkPermission()
         val AlertDialog = mBuilder.show()
 
         mDialogView.click.setOnClickListener {
@@ -225,29 +220,64 @@ class VideoActivity : AppCompatActivity(), CallBacks.playerCallBack {
                 channelID
             )
                 .setContentTitle("Example Notification")
-                .setContentText("This is an  example notification.")
+                .setProgress(100, 50, false )
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .build()
+            player_view?.player = player
+
 
             notificationManager?.notify(0, notification)
             AlertDialog.dismiss()
 
+
         }
-
-
-
         AlertDialog.show()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
+//    private void initFile() {
+//
+//        if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//
+//            final File folder = new File(Environment.getExternalStorageDirectory(), "Rustam/Media");
+//            if (!folder.exists()) folder.mkdirs();
+//
+//            File file = new File(folder, "task.txt");
+//            try {
+//                file.createNewFile();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            Thread thread = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    File file = new File(folder, "image.jpg");
+//                    try {
+//                        FileUtils.copyURLToFile(new URL("https://mirpozitiva.ru/uploads/posts/2016-08/medium/1472042903_31.jpg"), file);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//            thread.start();
+//
+//        } else {
+//            EasyPermissions.requestPermissions(this, "Для записи нужно разрешение",
+//                    199, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        }
+
+
+        override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        if (newConfig != null) {
-            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                player_view.width.and(500)
-                player_view.height.and(500)
-            }
-            }
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            playerView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         }
+    }
+
+
 }
 
 

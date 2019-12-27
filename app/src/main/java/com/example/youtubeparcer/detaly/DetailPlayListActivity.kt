@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.youtubeparcer.R
 import com.example.youtubeparcer.adapter.DeatilPlaylistAdapter
+import com.example.youtubeparcer.detail_video.VideoActivity
 //import com.example.youtubeparcer.detail_video.VideoActivity
 import com.example.youtubeparcer.model.DetailModelClass
 import com.example.youtubeparcer.model.ItemsItem
@@ -48,7 +49,7 @@ class DetailPlayListActivity : AppCompatActivity() {
     }
 
     private fun click(item: ItemsItem) {
-//        val intent = Intent(this, VideoActivity::class.java)
+        val intent = Intent(this, VideoActivity::class.java)
         intent.putExtra("id", id)
         intent.putExtra("content", item.contentDetails.itemCount)
         intent.putExtra("videoId", item.snippet.resourceId.videoId)
