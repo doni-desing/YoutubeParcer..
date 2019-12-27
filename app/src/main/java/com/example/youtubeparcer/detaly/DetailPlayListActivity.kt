@@ -4,17 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.youtubeparcer.R
 import com.example.youtubeparcer.adapter.DeatilPlaylistAdapter
-import com.example.youtubeparcer.detail_video.DetailVideoActivity
+//import com.example.youtubeparcer.detail_video.VideoActivity
 import com.example.youtubeparcer.model.DetailModelClass
 import com.example.youtubeparcer.model.ItemsItem
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.Behavior.DragCallback
+
 import kotlinx.android.synthetic.main.activity_detail_play_list.*
 
 
@@ -49,11 +47,10 @@ class DetailPlayListActivity : AppCompatActivity() {
         recycler_view_in_detail.adapter = adapter
     }
 
-
     private fun click(item: ItemsItem) {
-        val intent = Intent(this, DetailVideoActivity::class.java)
+//        val intent = Intent(this, VideoActivity::class.java)
         intent.putExtra("id", id)
-        intent.putExtra("title", item.snippet.title)
+        intent.putExtra("content", item.contentDetails.itemCount)
         intent.putExtra("videoId", item.snippet.resourceId.videoId)
         startActivity(intent)
     }
