@@ -1,4 +1,4 @@
-package com.example.youtubeparcer.api
+package com.example.youtubeparcer.data.api
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

@@ -3,11 +3,11 @@ package com.example.youtubeparcer.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.youtubeparcer.api.RetrofitClient
-import com.example.youtubeparcer.api.YouTubeApi
-import com.example.youtubeparcer.model.DetailModelClass
-import com.example.youtubeparcer.model.DetailVideoModel
-import com.example.youtubeparcer.model.PlaylistModel
+import com.example.youtubeparcer.data.api.RetrofitClient
+import com.example.youtubeparcer.data.api.YouTubeApi
+import com.example.youtubeparcer.data.model.DetailModelClass
+import com.example.youtubeparcer.data.model.DetailVideoModel
+import com.example.youtubeparcer.data.model.PlaylistModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

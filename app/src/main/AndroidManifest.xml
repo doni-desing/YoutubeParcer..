@@ -19,20 +19,11 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".detail_video.VideoActivity"
+        <activity android:name="com.example.youtubeparcer.ui.detail_video.VideoActivity"
             android:configChanges="orientation|screenSize"/>
-
-        <receiver android:name=".internet.InternetCheck">
-            <intent-filter>
-                <action
-                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
-                    tools:ignore="BatteryLife" />
-            </intent-filter>
-        </receiver>
-
-        <activity android:name=".detaly.DetailPlayListActivity" />
-        <activity android:name=".internet.InternetActivity" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name="com.example.youtubeparcer.ui.detaly.DetailPlayListActivity" />
+        <activity android:name="com.example.youtubeparcer.ui.internet.InternetActivity" />
+        <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

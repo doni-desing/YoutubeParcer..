@@ -1,4 +1,4 @@
-package com.example.youtubeparcer.detaly
+package com.example.youtubeparcer.ui.detaly
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,11 +8,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.youtubeparcer.R
-import com.example.youtubeparcer.adapter.DeatilPlaylistAdapter
-import com.example.youtubeparcer.detail_video.VideoActivity
-//import com.example.youtubeparcer.detail_video.VideoActivity
-import com.example.youtubeparcer.model.DetailModelClass
-import com.example.youtubeparcer.model.ItemsItem
+import com.example.youtubeparcer.data.adapter.DeatilPlaylistAdapter
+import com.example.youtubeparcer.ui.detail_video.VideoActivity
+import com.example.youtubeparcer.data.model.DetailModelClass
+import com.example.youtubeparcer.data.model.ItemsItem
 
 import kotlinx.android.synthetic.main.activity_detail_play_list.*
 
@@ -23,7 +22,6 @@ class DetailPlayListActivity : AppCompatActivity() {
     private lateinit var adapter: DeatilPlaylistAdapter
     private var id: String? = null
     private var title: String? = null
-    private var appBar: String? = null
     private var description: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +55,6 @@ class DetailPlayListActivity : AppCompatActivity() {
     }
 
     private fun subscribeToViewModel(){
-        Log.e("--", id)
      val data = id?.let { viewModel.fetchDetailPlayListData(it) }
        data?.observe(this, Observer <DetailModelClass>{
            if (data.value != null){

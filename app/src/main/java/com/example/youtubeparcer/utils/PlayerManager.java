@@ -32,9 +32,6 @@ import java.util.ArrayList;
 
 public class PlayerManager {
 
-    /**
-     * declare some usable variable
-     */
     private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
     private static final String TAG = "ExoPlayerManager";
     private static PlayerManager mInstance = null;
@@ -135,22 +132,11 @@ public class PlayerManager {
         });
     }
 
-    /**
-     * Return ExoPlayerManager instance
-     *
-     * @param mContext
-     * @return
-     */
     public static PlayerManager getSharedInstance(Context mContext) {
         if (mInstance == null) {
             mInstance = new PlayerManager(mContext);
         }
         return mInstance;
-    }
-
-
-    public void setPlayerListener(CallBacks.playerCallBack mPlayerCallBack) {
-        listner = mPlayerCallBack;
     }
 
     public PlayerView getPlayerView() {
@@ -161,7 +147,6 @@ public class PlayerManager {
         uriString = urlToPlay;
         Uri mp4VideoUri = Uri.parse(uriString);
         MediaSource videoSource;
-        // String filenameArray[] = urlToPlay.split("\\.");
         if (uriString.toUpperCase().contains("M3U8")) {
             videoSource = new HlsMediaSource.Factory(dataSourceFactory)
                     .setAllowChunklessPreparation(true)
@@ -179,28 +164,6 @@ public class PlayerManager {
             mPlayer.setPlayWhenReady(true);
         }
 
-    }
-
-    public void pausePlayer() {
-        if (mPlayer != null) {
-            mPlayer.setPlayWhenReady(false);
-            mPlayer.getPlaybackState();
-        }
-    }
-
-    public void resumePlayer() {
-        if (mPlayer != null) {
-            mPlayer.setPlayWhenReady(true);
-            mPlayer.getPlaybackState();
-        }
-    }
-
-    public void releasePlayer() {
-        if (mPlayer != null) {
-            mPlayer.release();
-            mInstance = null;
-            mPlayer = null;
-        }
     }
 
     public Boolean isPlayerPlaying() {
@@ -226,6 +189,4 @@ public class PlayerManager {
             return null;
         }
     }
-
-
 }

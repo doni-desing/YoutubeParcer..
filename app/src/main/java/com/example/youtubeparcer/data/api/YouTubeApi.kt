@@ -1,8 +1,8 @@
-package com.example.youtubeparcer.api
+package com.example.youtubeparcer.data.api
 
-import com.example.youtubeparcer.model.DetailModelClass
-import com.example.youtubeparcer.model.DetailVideoModel
-import com.example.youtubeparcer.model.PlaylistModel
+import com.example.youtubeparcer.data.model.DetailModelClass
+import com.example.youtubeparcer.data.model.DetailVideoModel
+import com.example.youtubeparcer.data.model.PlaylistModel
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

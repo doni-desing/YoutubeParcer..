@@ -45,5 +45,7 @@
         </item>
 
     </style>
-
+    <style name="DownloadDialog" parent="@style/ThemeOverlay.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/download_corner_radius</item>
+    </style>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.youtubeparcer.adapter
+package com.example.youtubeparcer.data.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.youtubeparcer.R
-import com.example.youtubeparcer.model.DetailModelClass
-import com.example.youtubeparcer.model.ItemsItem
-import com.example.youtubeparcer.model.PageInfo
-import com.example.youtubeparcer.model.PlaylistModel
+import com.example.youtubeparcer.data.model.ItemsItem
 import com.squareup.picasso.Picasso
 
 /**
